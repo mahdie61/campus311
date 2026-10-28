@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>UMD Campus 311</title>
   <style>
+    :root { --sbw: 0px; }          /* Scrollbar width, measured by the script below */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #fff;          /* White everywhere: no gray around the card */
+      background: #fff;
     }
     .frame {
       position: fixed;
@@ -19,12 +20,15 @@
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 545px;
+      max-width: 547px;            /* 545px content + 2px for the side borders */
       height: 100%;
       height: 100dvh;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      background: #fff;          /* No shadow, so the card blends into the page */
+      background: #fff;
+      border-left: 1px solid #e3e3e3;   /* Thin light-gray edge lines */
+      border-right: 1px solid #e3e3e3;
     }
     .hdr {
       flex: none;
@@ -38,13 +42,13 @@
     .view {
       flex: 1;
       position: relative;
-      overflow: hidden;          /* Clips the iframe's own scrollbar */
+      overflow: hidden;            /* Clips the iframe's own scrollbar */
     }
     .view iframe {
       position: absolute;
       top: 0;
       left: 0;
-      width: calc(100% + 40px);  /* Extra width pushes the scrollbar out of view */
+      width: calc(100% + var(--sbw));  /* Exactly one scrollbar wider: nothing else is cropped */
       height: 100%;
       border: 0;
       margin: 0;
@@ -55,9 +59,9 @@
     @media (min-width: 561px) {
       .hdr { font-size: 19px; padding: 16px 12px; white-space: nowrap; }
     }
-    /* Mobile: scrollbars overlay the content, so no extra width is needed */
+    /* Mobile: the card is full-width, so no edge lines are needed */
     @media (max-width: 560px) {
-      .view iframe { width: 100%; }
+      .frame { border-left: 0; border-right: 0; }
     }
   </style>
 </head>
@@ -76,5 +80,17 @@
       </iframe>
     </div>
   </div>
+
+  <script>
+    // Measure this browser's real scrollbar width (0 on mobile/overlay scrollbars)
+    (function () {
+      var probe = document.createElement("div");
+      probe.style.cssText = "position:absolute;top:-9999px;width:100px;height:100px;overflow:scroll;";
+      document.body.appendChild(probe);
+      var sbw = probe.offsetWidth - probe.clientWidth;
+      document.body.removeChild(probe);
+      document.documentElement.style.setProperty("--sbw", sbw + "px");
+    })();
+  </script>
 </body>
 </html>
