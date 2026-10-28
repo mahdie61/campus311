@@ -11,7 +11,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #ffffff;
+      background: #eef0ee;
     }
     .frame {
       position: fixed;
@@ -19,40 +19,71 @@
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 545px;       /* عرض کارت فرم */
+      max-width: 545px;
       height: 100%;
       height: 100dvh;
-      overflow: hidden;       /* اسکرول‌بار iframe را می‌برد */
+      display: flex;
+      flex-direction: column;
       background: #fff;
       box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
     }
-    .frame iframe {
+    .hdr {
+      flex: none;
+      margin: 0;
+      padding: 16px 20px;
+      background: #338a2e;          /* سبز هدر اصلی فرم؛ در صورت نیاز تنظیم کن */
+      color: #fff;
+      text-align: center;
+      font: 600 clamp(18px, 4.6vw, 22px)/1.3 "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    .view {
+      flex: 1;
+      position: relative;
+      overflow: hidden;             /* اسکرول‌بار iframe را می‌برد */
+    }
+    .view iframe {
       position: absolute;
       top: 0;
       left: 0;
-      width: 560px;           /* 545 + حدود 15px برای اسکرول‌بار که بریده می‌شود */
+      width: 560px;
       height: 100%;
       border: 0;
       margin: 0;
       padding: 0;
       display: block;
     }
+    .ftr {
+      flex: none;
+      padding: 8px;
+      text-align: center;
+      font: 12px "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+      color: #666;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+    }
+    .ftr a { color: #338a2e; }
     @media (max-width: 560px) {
-      .frame iframe { width: 100%; }   /* موبایل: اسکرول‌بار شناور است */
+      .view iframe { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div class="frame">
-    <iframe
-      name="survey123webform"
-      title="UMD Campus 311: Non-Emergency Service Requests"
-      src="https://survey123.arcgis.com/share/0a0727884c2444b68f3b56ec6bb5066f"
-      frameborder="0"
-      marginheight="0"
-      marginwidth="0"
-      allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com">
-    </iframe>
+    <h1 class="hdr">UMD Campus 311: Non-Emergency Service Requests</h1>
+    <div class="view">
+      <iframe
+        name="survey123webform"
+        title="UMD Campus 311: Non-Emergency Service Requests"
+        src="https://survey123.arcgis.com/share/0a0727884c2444b68f3b56ec6bb5066f?hide=header,footer"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com">
+      </iframe>
+    </div>
+    <footer class="ftr">
+      Powered by <a href="https://www.esri.com/en-us/arcgis/products/arcgis-survey123/overview" target="_blank" rel="noopener">ArcGIS Survey123</a>
+    </footer>
   </div>
 </body>
 </html>
