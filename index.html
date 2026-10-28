@@ -8,21 +8,26 @@
     html, body {
       margin: 0;
       padding: 0;
-      background: #eef0ee;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #fff;          /* White everywhere: no gray around the card */
     }
-    .page {
+    .frame {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
       max-width: 545px;
-      min-height: 100vh;
-      min-height: 100dvh;
-      margin: 0 auto;
-      background: #fff;
-      box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
+      height: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: #fff;          /* No shadow, so the card blends into the page */
     }
     .hdr {
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      flex: none;
       margin: 0;
       padding: 16px 20px;
       background: #338a2e;
@@ -31,36 +36,21 @@
       font: 600 clamp(18px, 4.6vw, 22px)/1.3 "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
     }
     .view {
-      overflow: hidden;      /* Clips the iframe's own scrollbar */
+      flex: 1;
+      position: relative;
+      overflow: hidden;          /* Clips the iframe's own scrollbar */
     }
     .view iframe {
-      display: block;
-      width: calc(100% + 20px);   /* Extra width pushes the scrollbar out of view */
-      height: 900px;              /* Initial height; auto-adjusted by the script below */
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100% + 40px);  /* Extra width pushes the scrollbar out of view */
+      height: 100%;
       border: 0;
       margin: 0;
       padding: 0;
+      display: block;
     }
-    .ftr {
-      padding: 14px 20px 18px;
-      border-top: 1px solid #e5e5e5;
-      font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
-      color: #555;
-    }
-    .notice {
-      margin: 0 0 10px;
-      font-size: 13px;
-      line-height: 1.5;
-      text-align: justify;
-      hyphens: auto;
-    }
-    .powered {
-      margin: 0;
-      font-size: 12px;
-      text-align: center;
-    }
-    .ftr a { color: #338a2e; }
-
     /* Desktop and wide screens: keep the title on a single line */
     @media (min-width: 561px) {
       .hdr { font-size: 19px; padding: 16px 12px; white-space: nowrap; }
@@ -72,12 +62,10 @@
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="frame">
     <h1 class="hdr">UMD Campus 311: Non-Emergency Service Requests</h1>
-
     <div class="view">
       <iframe
-        id="survey"
         name="survey123webform"
         title="UMD Campus 311: Non-Emergency Service Requests"
         src="https://survey123.arcgis.com/share/0a0727884c2444b68f3b56ec6bb5066f?hide=header,footer"
@@ -87,31 +75,6 @@
         allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com">
       </iframe>
     </div>
-
-    <footer class="ftr" lang="en">
-      <p class="notice">
-        Notice: © 2026 Ebrahim Sey. This is part of a personal portfolio. All projects, code, and case studies featured here are shared for professional evaluation and proof-of-concept demonstration. Please refrain from any reuse, referencing, or reproduction of this product or its contents. For further information, questions, and collaborations, feel free to reach out at <a href="mailto:EbrahimSey@outlook.com">EbrahimSey@outlook.com</a>.
-      </p>
-      <p class="powered">
-        Powered by <a href="https://www.esri.com/en-us/arcgis/products/arcgis-survey123/overview" target="_blank" rel="noopener">ArcGIS Survey123</a>
-      </p>
-    </footer>
   </div>
-
-  <script>
-    // Syncs the iframe height with the survey height.
-    // Listens to every Survey123 message that carries a height, not only the load event.
-    var survey = document.getElementById("survey");
-    window.addEventListener("message", function (e) {
-      if (e.source !== survey.contentWindow) return;
-      try {
-        var d = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
-        if (d && d.contentHeight) {
-          console.log("Survey123 message:", d.event, d.contentHeight); // Debug: remove when it works
-          survey.style.height = (d.contentHeight + 2) + "px";
-        }
-      } catch (err) {}
-    });
-  </script>
 </body>
 </html>
