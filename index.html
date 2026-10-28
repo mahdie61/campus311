@@ -8,27 +8,21 @@
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
       background: #eef0ee;
     }
-    .frame {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
+    .page {
       width: 100%;
       max-width: 545px;
-      height: 100%;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0 auto;
       background: #fff;
       box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
     }
     .hdr {
-      flex: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
       margin: 0;
       padding: 16px 20px;
       background: #338a2e;
@@ -36,69 +30,54 @@
       text-align: center;
       font: 600 clamp(18px, 4.6vw, 22px)/1.3 "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
     }
-    .view {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
-    .view iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 560px;
-      height: 100%;
+    .page iframe {
+      display: block;
+      width: 100%;
+      height: 900px;        /* Initial height; auto-adjusted once the survey loads */
       border: 0;
       margin: 0;
       padding: 0;
-      display: block;
     }
     .ftr {
-      flex: none;
-      padding: 10px 20px 8px;
-      background: #fff;
+      padding: 14px 20px 18px;
       border-top: 1px solid #e5e5e5;
       font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
       color: #555;
     }
     .notice {
-      margin: 0 0 6px;
-      font-size: 11.5px;
-      line-height: 1.45;
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.5;
       text-align: justify;
       hyphens: auto;
     }
-    .notice a { color: #338a2e; }
     .powered {
       margin: 0;
-      font-size: 11.5px;
+      font-size: 12px;
       text-align: center;
     }
-    .powered a { color: #338a2e; }
-    /*  */
+    .ftr a { color: #338a2e; }
+
+    /* Desktop and wide screens: keep the title on a single line */
     @media (min-width: 561px) {
-      .hdr { font-size: 18px; padding: 16px 12px; white-space: nowrap; }
-    }
-    /* Mobile */
-    @media (max-width: 560px) {
-      .view iframe { width: 100%; }
+      .hdr { font-size: 19px; padding: 16px 12px; white-space: nowrap; }
     }
   </style>
 </head>
 <body>
-  <div class="frame">
+  <div class="page">
     <h1 class="hdr">UMD Campus 311: Non-Emergency Service Requests</h1>
 
-    <div class="view">
-      <iframe
-        name="survey123webform"
-        title="UMD Campus 311: Non-Emergency Service Requests"
-        src="https://survey123.arcgis.com/share/0a0727884c2444b68f3b56ec6bb5066f?hide=header,footer"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com">
-      </iframe>
-    </div>
+    <iframe
+      id="survey"
+      name="survey123webform"
+      title="UMD Campus 311: Non-Emergency Service Requests"
+      src="https://survey123.arcgis.com/share/0a0727884c2444b68f3b56ec6bb5066f?hide=header,footer"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0"
+      allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com">
+    </iframe>
 
     <footer class="ftr" lang="en">
       <p class="notice">
@@ -109,5 +88,19 @@
       </p>
     </footer>
   </div>
+
+  <script>
+    // Syncs the iframe height with the survey height (same approach as Esri's official embed code)
+    var survey = document.getElementById("survey");
+    window.addEventListener("message", function (e) {
+      if (e.source !== survey.contentWindow) return;
+      try {
+        var d = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+        if (d && typeof d.event === "string" && d.event.indexOf("survey123") === 0 && d.contentHeight) {
+          survey.style.height = d.contentHeight + "px";
+        }
+      } catch (err) {}
+    });
+  </script>
 </body>
 </html>
